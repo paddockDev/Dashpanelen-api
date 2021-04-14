@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@octokit/graphql": "^4.6.1",
-    "@sentry/node": "^6.2.3",
+    "@sentry/node": "^6.2.5",
     "@sentry/tracing": "^6.2.3",
     "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",
