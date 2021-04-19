@@ -1,4 +1,4 @@
-const { Users, UserProfiles, UserInsights } = require('../models')
+const { Users, UserProfiles, UserInsights, Topics } = require('../models')
 
 const getUserByUsername = async (req, res) => {
   const username = req.params.username
@@ -27,11 +27,28 @@ const getUserInsightsByUsername = async (req, res) => {
   const username = req.params.username
 
   const insight = await UserInsights.findAll({
-    include: [{ model: Users, where: { username: username } }]
+    include: [
+      { model: Users, where: { username: username } },
+      { model: Topics }
+    ]
+  })
+
+  const countLanguage = await UserInsights.findAndCountAll({
+    where: { user_id: insight[0].user_id },
+    include: [{ model: Topics, where: { type: 'language' } }]
+  })
+
+  const countFramework = await UserInsights.findAndCountAll({
+    where: { user_id: insight[0].user_id },
+    include: [{ model: Topics, where: { type: 'framework' } }]
   })
 
   return res.status(200).send({
-    data: insight
+    data: {
+      countLanguage: countLanguage.count,
+      countFramework: countFramework.count,
+      insight: insight
+    }
   })
 }
 
