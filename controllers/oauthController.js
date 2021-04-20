@@ -57,27 +57,6 @@ const redirect = (req, res) => {
   res.redirect(`https://github.com/login/oauth/authorize?client_id=${process.env.CLIENT_ID}&scope=user:email`)
 }
 
-async function githubToken ({ code }) {
-  const body = {
-    client_id: process.env.CLIENT_ID,
-    client_secret: process.env.CLIENT_SECRET,
-    code: code
-  }
-
-  const header = {
-    headers: {
-      Accept: 'application/json'
-    }
-  }
-
-  const accessToken = await axios.post(`https://github.com/login/oauth/access_token`, body, header)
-    .then((res) => res.data['access_token'])
-  return axios.get('https://api.github.com/user', {
-    headers: { Authorization: `Bearer ${accessToken}` }
-  })
-    .then((res) => res.data)
-}
-
 module.exports = {
   callback,
   redirect
