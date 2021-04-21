@@ -1,4 +1,4 @@
-const { Users, UserProfiles } = require('../models')
+const { Users, UserProfiles, UserServices } = require('../models')
 const axios = require('axios')
 const jwt = require('jsonwebtoken')
 
@@ -42,7 +42,20 @@ const callback = async (req, res) => {
     await UserProfiles.create({
       user_id: newUser.id
     })
+
+    await UserServices.create({
+      user_id: newUser.id,
+      provider: 'github',
+      provider_id: gitHubUser.id,
+      provider_token: accessToken
+    })
   }
+
+  await UserServices.update({
+    provider_token: accessToken
+  }, {
+    where: { id: user.id }
+  })
 
   const token = jwt.sign({ githubUser: gitHubUser, id: user.id }, process.env.SECRET, {
     expiresIn: 86400
